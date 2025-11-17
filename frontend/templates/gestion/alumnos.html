@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Gestion - Alumnos{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Gestión de Alumnos</h1>
+    <button id="btnAgregar" class="btn-primary">+ Agregar Alumno</button>
+</div>
+
+<div class="card">
+    <h2 class="card-title">Lista de Alumnos</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Carrera</th>
+                <th>Ciclo</th>
+                <th>Fecha de Nacimiento</th>
+                <th class="text-center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tabla-alumnos">
+            <!-- Se llena dinámicamente por JS -->
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal Formulario -->
+<div id="modalAlumno" class="modal hidden">
+    <div class="modal-content">
+        <h2 id="modalTitulo">Nuevo Alumno</h2>
+
+        <form id="formAlumno">
+            <label>Código:</label>
+            <input type="number" id="codigo_alumno" required>
+
+            <label>Nombre:</label>
+            <input type="text" id="nombre" required>
+
+            <label>Apellido:</label>
+            <input type="text" id="apellido" required>
+
+            <label>Carrera:</label>
+            <input type="text" id="carrera" required>
+
+            <label>Ciclo:</label>
+            <input type="number" id="ciclo" min="1" max="12" required>
+
+            <label>Fecha de nacimiento:</label>
+            <input type="date" id="fecha_nacimiento" required>
+
+            <div class="modal-actions">
+                <button type="submit" class="btn-primary">Guardar</button>
+                <button type="button" id="btnCerrarModal" class="btn-secondary">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script type="module" src="{% static 'js/api.js' %}"></script>
+<script type="module" src="{% static 'js/gestion/alumnos.js' %}"></script>
+{% endblock %}

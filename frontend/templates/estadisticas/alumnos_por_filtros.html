@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Estadisticas - Alumnos por Filtro{% endblock %}
+
+{% block content %}
+
+<h1>Alumnos por Filtro</h1>
+
+<div class="card">
+
+    <form id="formFiltros" class="form-grid">
+
+        <div>
+            <label>Máquina</label>
+            <select id="selectMaquina">
+                <option value="">Seleccione...</option>
+            </select>
+        </div>
+
+        <div>
+            <label>Asignatura - Profesor</label>
+            <select id="selectAsignatura">
+                <option value="">Seleccione...</option>
+            </select>
+        </div>
+
+        <div>
+            <label>Fecha</label>
+            <input type="date" id="inputFecha">
+        </div>
+
+        <div>
+            <button type="submit" class="btn-primary">Consultar</button>
+        </div>
+
+    </form>
+
+</div>
+
+<div id="mensaje" class="mensaje"></div>
+
+<div class="card" id="tablaCard" style="display:none;">
+    <h2>Resultados</h2>
+    <table id="tablaResultados">
+        <thead>
+            <tr>
+                <th>Alumno</th>
+                <th>Código</th>
+                <th>Carrera</th>
+                <th>Ciclo</th>
+                <th>Entrada</th>
+                <th>Salida</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script type="module" src="{% static 'js/estadisticas/alumnos_por_filtros.js' %}"></script>
+{% endblock %}

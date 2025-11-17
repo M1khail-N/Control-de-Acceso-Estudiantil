@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Registro - Entrada Libre{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Entrada Libre</h1>
+</div>
+
+<div class="card">
+    <h2 class="card-title">Registrar Entrada Libre</h2>
+
+    <form id="formRegistroLibre">
+
+        <label>Código del Alumno:</label>
+        <input type="number" id="codigoAlumno" required>
+
+        <label>Máquina:</label>
+        <select id="maquina" required>
+            <option value="">Seleccione...</option>
+            <!-- Se carga dinámicamente si deseas -->
+        </select>
+
+        <label>Motivo:</label>
+        <select id="motivo" required>
+            <option value="">Seleccione...</option>
+            <option value="correo">Revisar correo</option>
+            <option value="proyecto">Proyecto</option>
+            <option value="trabajo">Trabajo</option>
+            <option value="extra">Extra clase</option>
+            <option value="otro">Otro</option>
+        </select>
+
+        <div class="modal-actions">
+            <button type="submit" class="btn-primary">Registrar Entrada</button>
+        </div>
+    </form>
+
+    <p id="mensajeLibre" class="message"></p>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script type="module" src="{% static 'js/api.js' %}"></script>
+<script type="module" src="{% static 'js/acceso/registro_libre.js' %}"></script>
+{% endblock %}

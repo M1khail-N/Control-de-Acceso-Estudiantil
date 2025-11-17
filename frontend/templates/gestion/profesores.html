@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Gestión - Profesores{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Gestión de Profesores</h1>
+    <button id="btnAgregar" class="btn-primary">+ Agregar Profesor</button>
+</div>
+
+<div class="card">
+    <h2 class="card-title">Lista de Profesores</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th class="text-center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tabla-profesores">
+            <!-- Se llena dinámicamente por JS -->
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal Formulario -->
+<div id="modalProfesor" class="modal hidden">
+    <div class="modal-content">
+        <h2 id="modalTitulo">Nuevo Profesor</h2>
+
+        <form id="formProfesor">
+            <label>Nombre:</label>
+            <input type="text" id="nombre" required>
+
+            <label>Apellido:</label>
+            <input type="text" id="apellido" required>
+
+            <div class="modal-actions">
+                <button type="submit" class="btn-primary">Guardar</button>
+                <button type="button" id="btnCerrarModal" class="btn-secondary">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script type="module" src="{% static 'js/api.js' %}"></script>
+<script type="module" src="{% static 'js/gestion/profesores.js' %}"></script>
+{% endblock %}

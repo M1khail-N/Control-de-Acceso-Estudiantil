@@ -1,0 +1,54 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Estadisticas - Dashboard{% endblock %}</title>
+
+    <!-- CSS Componentes -->
+    <link rel="stylesheet" href="{% static 'css/components/layout.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components/cards.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components/tables.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components/forms.css' %}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <h2 class="sidebar-title">Control de Acceso Estudiantil</h2>
+        <nav class="sidebar-menu">
+            <span class="sidebar-section">Estadisticas</span>
+            <a href="/dashboard" class="menu-item">Dashboard</a>
+            <a href="/estadisticas/alumnos-por-filtros" class="menu-item">Alumnos por Filtro</a>
+            <a href="/estadisticas/motivo-mes" class="menu-item">Motivo por Mes</a> 
+            <a href="/estadisticas/uso-semana" class="menu-item">Usos por Semana</a> <br>
+
+            <span class="sidebar-section">Gestión</span>
+            <a href="/gestion/alumnos" class="menu-item">Alumnos</a>
+            <a href="/gestion/profesores" class="menu-item">Profesores</a>
+            <a href="/gestion/asignaturas" class="menu-item">Asignaturas</a>
+            <a href="/gestion/maquinas" class="menu-item">Máquinas</a> <br>
+
+            <span class="sidebar-section">Acceso</span>
+            <a href="/acceso/registro/clase" class="menu-item">Registro clase</a>
+            <a href="/acceso/registro/libre" class="menu-item">Registro libre</a> 
+            <a href="/acceso/registro/salida" class="menu-item">Registrar salida</a> <br>
+        </nav>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="content">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    {% block extra_js %}
+    {% endblock %}
+</body>
+
+</html>

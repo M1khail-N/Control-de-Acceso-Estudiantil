@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard - Estadísticas{% endblock %}
+
+{% block content %}
+<h1>Dashboard General</h1>
+
+<div class="card-grid" id="dashboard-cards">
+
+    <div class="card">
+        <div class="card-title">Sesiones activas</div>
+        <div class="card-value" id="sesiones_activas">0</div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Promedio tiempo (min)</div>
+        <div class="card-value" id="promedio_tiempo">0</div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Ciclo con más uso</div>
+        <div class="card-value" id="ciclo_top">-</div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">Total sesiones ciclo</div>
+        <div class="card-value" id="ciclo_total">0</div>
+    </div>
+</div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script type="module" src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Gestión - Máquinas{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Gestión de Máquinas</h1>
+    <button id="btnAgregar" class="btn-primary">+ Agregar Máquina</button>
+</div>
+
+<div class="card">
+    <h2 class="card-title">Lista de Máquinas</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th class="text-center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tabla-maquinas">
+            <!-- Se llena dinámicamente por JS -->
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal Formulario -->
+<div id="modalMaquina" class="modal hidden">
+    <div class="modal-content">
+        <h2 id="modalTitulo">Nueva Máquina</h2>
+
+        <form id="formMaquina">
+            <label>Nombre de la Máquina:</label>
+            <input type="text" id="nombre" required>
+
+            <div class="modal-actions">
+                <button type="submit" class="btn-primary">Guardar</button>
+                <button type="button" id="btnCerrarModal" class="btn-secondary">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script type="module" src="{% static 'js/api.js' %}"></script>
+<script type="module" src="{% static 'js/gestion/maquinas.js' %}"></script>
+{% endblock %}

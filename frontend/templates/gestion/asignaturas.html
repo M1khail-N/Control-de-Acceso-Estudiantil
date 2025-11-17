@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Gestión - Asignaturas{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Gestión de Asignaturas</h1>
+    <button id="btnAgregar" class="btn-primary">+ Agregar Asignatura</button>
+</div>
+
+<div class="card">
+    <h2 class="card-title">Lista de Asignaturas</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Profesor</th>
+                <th class="text-center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tabla-asignaturas">
+            <!-- Se llena dinámicamente por JS -->
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal Formulario -->
+<div id="modalAsignatura" class="modal hidden">
+    <div class="modal-content">
+        <h2 id="modalTitulo">Nueva Asignatura</h2>
+
+        <form id="formAsignatura">
+            <label>Nombre de la Asignatura:</label>
+            <input type="text" id="nombre" required>
+
+            <label>Profesor:</label>
+            <select id="profesor" required>
+                <!-- Se llena dinámicamente -->
+            </select>
+
+            <div class="modal-actions">
+                <button type="submit" class="btn-primary">Guardar</button>
+                <button type="button" id="btnCerrarModal" class="btn-secondary">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script type="module" src="{% static 'js/api.js' %}"></script>
+<script type="module" src="{% static 'js/gestion/asignaturas.js' %}"></script>
+{% endblock %}
