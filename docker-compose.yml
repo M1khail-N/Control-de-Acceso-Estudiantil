@@ -1,0 +1,37 @@
+version: '3.9'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: cael_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: cael_db
+      MYSQL_USER: cael_user
+      MYSQL_PASSWORD: cael_pass
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  web:
+    build: .
+    container_name: cael_django
+    command: /entrypoint.sh
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      DB_ENGINE: django.db.backends.mysql
+      DB_NAME: cael_db
+      DB_USER: cael_user
+      DB_PASSWORD: cael_pass
+      DB_HOST: db
+      DB_PORT: 3306
+
+volumes:
+  mysql_data:
