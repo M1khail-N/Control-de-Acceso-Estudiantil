@@ -15,7 +15,7 @@ pipeline {
                 git(
                     url: 'https://github.com/M1khail-N/Control-de-Acceso-Estudiantil.git',
                     branch: 'feature',
-                    credentialsId: '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'
+                    credentialsId: 'Jenkins-CAEL-CI'
                 )
             }
         }
