@@ -85,13 +85,13 @@ pipeline {
             }
             steps {
                 withSonarQubeEnv("${SONARQUBE_ENV}") {
-                    sh """
+                    sh '''
                     docker run --rm \
                         -e SONAR_HOST_URL="${SONAR_HOST_URL}" \
                         -e SONAR_TOKEN="${SONAR_TOKEN}" \
                         -v "\$(pwd):/usr/src" \
                         sonarsource/sonar-scanner-cli
-                    """
+                    '''
                 }
             }
         }
