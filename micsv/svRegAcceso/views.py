@@ -86,10 +86,7 @@ class RegistroBaseViewSet(viewsets.ModelViewSet):
 
         return Response(RegistroBaseSerializer(registro).data)
 
-
-# =============================================================
 # REGISTRO LIBRE
-# =============================================================
 class RegistroLibreViewSet(viewsets.ModelViewSet):
     queryset = RegistroLibre.objects.all()
     serializer_class = RegistroLibreSerializer
@@ -114,9 +111,7 @@ class RegistroLibreViewSet(viewsets.ModelViewSet):
 
         return Response(RegistroLibreSerializer(libre).data, status=201)
 
-# =============================================================
-# REGISTRO DE CLASE
-# =============================================================
+# REGISTRO EN CLASE
 class RegistroClaseViewSet(viewsets.ModelViewSet):
     queryset = RegistroClase.objects.all()
     serializer_class = RegistroClaseSerializer
