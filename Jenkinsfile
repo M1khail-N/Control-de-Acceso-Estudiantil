@@ -22,49 +22,49 @@ pipeline {
 
         stage('Levantar imagen en Docker') {
             steps {
-                sh """
+                sh '''
                 docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
-                """
+                '''
             }
         }
 
         stage('Ejecutar contenedor para testeo') {
             steps {
-                sh """
+                sh '''
                 docker network create cael-net || true
 
                 docker run -d --name ${PROJECT_NAME}-test \
                     --network=cael-net \
                     -p 8000:8000 \
                     ${DOCKER_IMAGE}:${DOCKER_TAG}
-                """
+                '''
                 sleep 12
             }
         }
 
         stage('Pruebas unitarias') {
             steps {
-                sh """
+                sh '''
                 docker exec ${PROJECT_NAME}-test bash -c \
                     "python manage.py test micsv"
-                """
+                '''
             }
         }
 
         stage('Pruebas de integración') {
             steps {
-                sh """
+                sh '''
                 docker exec ${PROJECT_NAME}-test bash -c \
                     "python manage.py test"
-                """
+                '''
             }
         }
 
         stage('Levantar Selenium Grid') {
             steps {
-                sh """
+                sh '''
                 docker-compose -f docker-compose.selenium.yml up -d
-                """
+                '''
                 sleep 8
             }
         }
@@ -72,10 +72,10 @@ pipeline {
 
         stage('Pruebas funcionales (Selenium)') {
             steps {
-                sh """
+                sh '''
                 docker exec ${PROJECT_NAME}-test bash -c \
                     "pytest tests_selenium -q"
-                """
+                '''
             }
         }
 
@@ -122,14 +122,14 @@ pipeline {
 
         stage('Escaneo con OWASP ZAP') {
             steps {
-                sh """
+                sh '''
                 docker run --rm \
                     --network="host" \
                     -v $(pwd)/zap-reports:/zap/reports \
                     owasp/zap2docker-stable zap-baseline.py \
                         -t http://localhost:8000 \
                         -r zap_report.htm
-                """
+                '''
             }
             post {
                 always {
