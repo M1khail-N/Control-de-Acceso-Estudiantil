@@ -12,9 +12,11 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'feature', url: 'https://github.com/M1khail-N/Control-de-Acceso-Estudiantil.git'
-                branch: 'feature',
-                credentialsId: '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'
+                git(
+                    url: 'https://github.com/M1khail-N/Control-de-Acceso-Estudiantil.git',
+                    branch: 'feature',
+                    credentialsId: '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'
+                )
             }
         }
 
@@ -29,7 +31,10 @@ pipeline {
         stage('Ejecutar contenedor para testeo') {
             steps {
                 sh """
+                docker network create cael-net || true
+
                 docker run -d --name ${PROJECT_NAME}-test \
+                    --network=cael-net \
                     -p 8000:8000 \
                     ${DOCKER_IMAGE}:${DOCKER_TAG}
                 """
@@ -55,11 +60,21 @@ pipeline {
             }
         }
 
+        stage('Levantar Selenium Grid') {
+            steps {
+                sh """
+                docker-compose -f docker-compose.selenium.yml up -d
+                """
+                sleep 8
+            }
+        }
+
+
         stage('Pruebas funcionales (Selenium)') {
             steps {
                 sh """
                 docker exec ${PROJECT_NAME}-test bash -c \
-                    "pytest tests_selenium"
+                    "pytest tests_selenium -q"
                 """
             }
         }
@@ -94,14 +109,14 @@ pipeline {
                 sh '''
                 docker run --rm -v "$PWD":/jmeter \
                     justb4/jmeter \
-                    -n -t /jmeter/jmeter/test-plan.jmx \
-                    -l /jmeter/jmeter/results.jtl
-
-                jmeter -n \
-                    -t jmeter/test-plan.jmx \
-                    -l jmeter/results.jtl \
-                    -j jmeter/jmeter.log
+                    -n -t /jmeter/test-plan.jmx \
+                    -l /jmeter/results.jtl
                 '''
+            }
+            post {
+                always {
+                    archiveArtifacts artifacts: 'results.jtl', allowEmptyArchive: true
+                }
             }
         }
 
@@ -109,10 +124,11 @@ pipeline {
             steps {
                 sh """
                 docker run --rm \
-                    -v \$(pwd)/zap-reports:/zap/reports \
+                    --network="host" \
+                    -v $(pwd)/zap-reports:/zap/reports \
                     owasp/zap2docker-stable zap-baseline.py \
-                        -t http://host.docker.internal:8000 \
-                        -r zap_report.html
+                        -t http://localhost:8000 \
+                        -r zap_report.htm
                 """
             }
             post {
@@ -126,6 +142,7 @@ pipeline {
     post {
         always {
             sh "docker rm -f ${PROJECT_NAME}-test || true"
+            sh "docker-compose -f docker-compose.selenium.yml down || true"
         }
     }
 }

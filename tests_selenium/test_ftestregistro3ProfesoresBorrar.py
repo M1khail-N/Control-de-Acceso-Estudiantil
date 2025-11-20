@@ -8,11 +8,22 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+
+def get_remote_firefox():
+    options = Options()
+    options.add_argument("--headless")  # opcional, recomendable para CI
+
+    return webdriver.Remote(
+        command_executor="http://selenium-hub:4444/wd/hub",
+        options=options,
+        desired_capabilities=DesiredCapabilities.FIREFOX
+    )
 
 class TestFtestregistro3ProfesoresBorrar():
   def setup_method(self, method):
-    self.driver = webdriver.Firefox()
+    self.driver = get_remote_firefox()
     self.vars = {}
   
   def teardown_method(self, method):
@@ -20,7 +31,7 @@ class TestFtestregistro3ProfesoresBorrar():
   
   def test_ftestregistro3ProfesoresBorrar(self):
     print("`set speed` is a no-op in code export, use `pause` instead")
-    self.driver.get("http://localhost:8000/gestion/profesores")
+    self.driver.get("http://cael-test:8000/gestion/profesores")
     self.driver.set_window_size(1112, 867)
     self.driver.find_element(By.CSS_SELECTOR, "tr:nth-child(11) .btn-delete").click()
     time.sleep(1)
