@@ -28,9 +28,9 @@ pipeline {
         ====================== */
         stage('Levantar imagen en Docker') {
             steps {
-                powershell """
+                powershell '''
                 docker build -t ${env.DOCKER_IMAGE}:${env.DOCKER_TAG} .
-                """
+                '''
             }
         }
 
@@ -39,7 +39,7 @@ pipeline {
         ====================== */
         stage('Ejecutar contenedor para testeo') {
             steps {
-                powershell """
+                powershell '''
                 docker network create cael-net 2>\$null
 
                 docker run -d --name ${env.PROJECT_NAME}-test `
@@ -48,7 +48,7 @@ pipeline {
                     ${env.DOCKER_IMAGE}:${env.DOCKER_TAG}
 
                 Start-Sleep -Seconds 12
-                """
+                '''
             }
         }
 
@@ -57,10 +57,10 @@ pipeline {
         ====================== */
         stage('Pruebas unitarias') {
             steps {
-                powershell """
+                powershell '''
                 docker exec ${env.PROJECT_NAME}-test `
                     python manage.py test micsv --settings=core.settings_test
-                """
+                '''
             }
         }
 
@@ -103,13 +103,13 @@ pipeline {
         stage('Analisis con SonarQube') {
             steps {
                 withSonarQubeEnv('SonarQubeServer') {
-                    powershell """
+                    powershell '''
                     sonar-scanner `
                         -Dsonar.projectKey=django-project `
                         -Dsonar.sources=core,micsv,frontend `
                         -Dsonar.host.url=${SONAR_HOST_URL} `
                         -Dsonar.login=${SONAR_TOKEN}
-                    """
+                    '''
                 }
             }
         }
@@ -127,13 +127,13 @@ pipeline {
         ====================== */
         stage('Prueba de rendimiento con JMeter') {
             steps {
-                powershell """
+                powershell '''
                 docker run --rm `
                     -v "${WORKSPACE}:/jmeter" `
                     justb4/jmeter `
                     -n -t /jmeter/test-plan.jmx `
                     -l /jmeter/results.jtl
-                """
+                '''
             }
             post {
                 always {
@@ -147,14 +147,14 @@ pipeline {
         ====================== */
         stage('Escaneo con OWASP ZAP') {
             steps {
-                powershell """
+                powershell '''
                 docker run --rm `
                     --network="cael-net" `
                     -v "${WORKSPACE}/zap-reports:/zap/reports" `
                     owasp/zap2docker-stable zap-baseline.py `
                         -t http://cael-test:8000 `
                         -r zap_report.htm
-                """
+                '''
             }
             post {
                 always {
@@ -166,10 +166,10 @@ pipeline {
 
     post {
         always {
-            powershell """
+            powershell '''
             docker rm -f ${env.PROJECT_NAME}-test 2>\$null
             docker-compose -f docker-compose.selenium.yml down 2>\$null
-            """
+            '''
         }
     }
 }
