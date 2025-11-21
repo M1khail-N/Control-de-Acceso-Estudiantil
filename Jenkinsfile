@@ -58,7 +58,7 @@ pipeline {
             steps {
                 powershell """
                 docker exec ${env.PROJECT_NAME}-test `
-                    python manage.py test micsv
+                    python manage.py test micsv --settings=core.settings_test
                 """
             }
         }
@@ -70,7 +70,7 @@ pipeline {
             steps {
                 powershell """
                 docker exec ${env.PROJECT_NAME}-test `
-                    python manage.py test
+                    python manage.py test --settings=core.settings_test
                 """
             }
         }
@@ -154,10 +154,10 @@ pipeline {
             steps {
                 powershell """
                 docker run --rm `
-                    --network="host" `
+                    --network="cael-net" `
                     -v "${WORKSPACE}/zap-reports:/zap/reports" `
                     owasp/zap2docker-stable zap-baseline.py `
-                        -t http://localhost:8000 `
+                        -t http://cael-test:8000 `
                         -r zap_report.htm
                 """
             }
