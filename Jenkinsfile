@@ -103,7 +103,7 @@ pipeline {
         stage('Analisis con SonarQube') {
             steps {
                 withSonarQubeEnv('SonarQubeServer') {
-                    sh """
+                    powershell """
                     sonar-scanner \
                         -Dsonar.projectKey=django-project \
                         -Dsonar.sources=core,micsv,frontend \
