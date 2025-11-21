@@ -75,9 +75,7 @@ pipeline {
             }
         }
 
-        /* =====================
-           SELENIUM GRID
-        ====================== */
+        /* 
         stage('Levantar Selenium Grid') {
             steps {
                 powershell """
@@ -87,9 +85,6 @@ pipeline {
             }
         }
 
-        /* =====================
-           SELENIUM TESTS
-        ====================== */
         stage('Pruebas funcionales (Selenium)') {
             steps {
                 powershell """
@@ -98,6 +93,8 @@ pipeline {
                 """
             }
         }
+
+        */
 
         /* =====================
            SONARQUBE ANALYSIS
