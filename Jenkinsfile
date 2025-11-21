@@ -6,6 +6,7 @@ pipeline {
         DOCKER_IMAGE   = "cael-app"
         DOCKER_TAG     = "latest"
         SONARQUBE_ENV  = "SonarQubeServer"
+        SONAR_TOKEN = credentials('sonarqube-token')
     }
 
     stages {
