@@ -103,9 +103,9 @@ pipeline {
         stage('Analisis con SonarQube') {
             steps {
                 withSonarQubeEnv('SonarQubeServer') {
-                    powershell '''
-                    sonar-scanner -Dsonar.projectKey=django-project -Dsonar.sources=. -Dsonar.host.url=$env:SONAR_HOST_URL -Dsonar.login=$env:SONAR_TOKEN
-                    '''
+                    powershell """
+sonar-scanner -Dsonar.projectKey=django-project -Dsonar.sources=. -Dsonar.host.url=$env:SONAR_HOST_URL -Dsonar.login=$env:SONAR_TOKEN
+"""
                 }
             }
         }
