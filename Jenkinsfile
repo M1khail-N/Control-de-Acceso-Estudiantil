@@ -104,10 +104,10 @@ pipeline {
             steps {
                 withSonarQubeEnv('SonarQubeServer') {
                     powershell """
-                    sonar-scanner \
-                        -Dsonar.projectKey=django-project \
-                        -Dsonar.sources=core,micsv,frontend \
-                        -Dsonar.host.url=${SONAR_HOST_URL} \
+                    sonar-scanner `
+                        -Dsonar.projectKey=django-project `
+                        -Dsonar.sources=core,micsv,frontend `
+                        -Dsonar.host.url=${SONAR_HOST_URL} `
                         -Dsonar.login=${SONAR_TOKEN}
                     """
                 }
