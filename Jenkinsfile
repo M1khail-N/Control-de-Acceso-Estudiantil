@@ -100,18 +100,15 @@ pipeline {
         /* =====================
            SONARQUBE ANALYSIS
         ====================== */
-        stage('Análisis con SonarQube') {
-            environment {
-                SONAR_TOKEN = credentials('sonarqube-token')
-            }
+        stage('Analisis con SonarQube') {
             steps {
-                withSonarQubeEnv("${SONARQUBE_ENV}") {
-                    powershell """
-                    docker run --rm `
-                        -e SONAR_HOST_URL="${env.SONAR_HOST_URL}" `
-                        -e SONAR_TOKEN="${env.SONAR_TOKEN}" `
-                        -v "${WORKSPACE}:/usr/src" `
-                        sonarsource/sonar-scanner-cli
+                withSonarQubeEnv('SonarQubeServer') {
+                    sh """
+                    sonar-scanner \
+                        -Dsonar.projectKey=django-project \
+                        -Dsonar.sources=core,micsv,frontend \
+                        -Dsonar.host.url=${SONAR_HOST_URL} \
+                        -Dsonar.login=${SONAR_TOKEN}
                     """
                 }
             }
