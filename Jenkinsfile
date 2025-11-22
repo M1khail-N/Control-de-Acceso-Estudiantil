@@ -38,7 +38,7 @@ pipeline {
                 docker-compose down 2>\$null
                 docker rm -f cael_mysql 2>\$null
                 docker rm -f cael_django 2>\$null
-                
+
                 docker-compose up -d --build
                 echo "Esperando 20 segundos para que inicie la BD y el servidor..."
                 Start-Sleep -Seconds 20
@@ -104,7 +104,7 @@ pipeline {
         stage("Quality Gate") {
             steps {
                 echo "Esperando resultado de SonarQube..."
-                timeout(time: 5, unit: 'MINUTES') {
+                timeout(time: 10, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
                 }
             }
