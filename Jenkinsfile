@@ -36,7 +36,10 @@ pipeline {
                 powershell """
                 echo "Levantando servicios web y BD..."
                 docker-compose down 2>\$null
-                docker-compose up -d
+                docker rm -f cael_mysql 2>\$null
+                docker rm -f cael_django 2>\$null
+                
+                docker-compose up -d --build
                 echo "Esperando 20 segundos para que inicie la BD y el servidor..."
                 Start-Sleep -Seconds 20
                 """
