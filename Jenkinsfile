@@ -4,18 +4,15 @@ pipeline {
     environment {
         PROJECT_NAME   = "cael"
         DOCKER_IMAGE   = "cael-app"
-        DOCKER_TAG     = "latest"
         SONARQUBE_ENV  = "SonarQubeServer"
-        SONAR_TOKEN = credentials('sonarqube-token')
+        HOST_URL       = "http://host.docker.internal:8000"
     }
 
     stages {
-
-        /* =====================
-           CHECKOUT
-        ====================== */
+        // CHECKOUT
         stage('Checkout') {
             steps {
+                echo "Clonando repo..."
                 git(
                     url: 'https://github.com/M1khail-N/Control-de-Acceso-Estudiantil.git',
                     branch: 'feature'
@@ -23,54 +20,46 @@ pipeline {
             }
         }
 
-        /* =====================
-           BUILD DOCKER IMAGE
-        ====================== */
+        // BUILD DOCKER IMAGE
         stage('Levantar imagen en Docker') {
             steps {
                 powershell """
-                docker build -t ${env.DOCKER_IMAGE}:${env.DOCKER_TAG} .
+                echo "Levantando imagen ${env.DOCKER_IMAGE}..."
+                docker build -t ${env.DOCKER_IMAGE}:latest .
                 """
             }
         }
 
-        /* =====================
-           RUN TEST CONTAINER
-        ====================== */
-        stage('Ejecutar contenedor para testeo') {
+        // EJECUTAR ENTORNO DE PRUEBAS
+        stage('Levantar contenedor de testeo') {
             steps {
                 powershell """
-                docker network create cael-net 2>\$null
-
-                docker run -d --name ${env.PROJECT_NAME}-test `
-                    --network=cael-net `
-                    -p 8000:8000 `
-                    ${env.DOCKER_IMAGE}:${env.DOCKER_TAG}
-
-                Start-Sleep -Seconds 12
+                echo "Levantando servicios web y BD..."
+                docker-compose down 2>\$null
+                docker-compose up -d
+                echo "Esperando 20 segundos para que inicie la BD y el servidor..."
+                Start-Sleep -Seconds 20
                 """
             }
         }
 
-        /* =====================
-           UNIT TESTS
-        ====================== */
+        // UNIT TESTS
         stage('Pruebas unitarias') {
             steps {
                 powershell """
-                docker exec ${env.PROJECT_NAME}-test `
+                echo "Ejecutando pruebas unitarias de los microservicios..."
+                docker exec -t cael_django `
                     python manage.py test micsv --settings=core.settings_test
                 """
             }
         }
 
-        /* =====================
-           INTEGRATION TESTS
-        ====================== */
+        // INTEGRATION TESTS
         stage('Pruebas de integración') {
             steps {
                 powershell """
-                docker exec ${env.PROJECT_NAME}-test `
+                echo "Ejecutando prueba de integración..."
+                docker exec -t cael_django `
                     python manage.py test --settings=core.settings_test
                 """
             }
@@ -97,36 +86,32 @@ pipeline {
 
         */
 
-        /* =====================
-           SONARQUBE ANALYSIS
-        ====================== */
+        // SONARQUBE ANALYSIS
         stage('Analisis con SonarQube') {
             steps {
-                withSonarQubeEnv('SonarQubeServer') {
-                    powershell '''
-        sonar-scanner -Dsonar.projectKey=django-project `
-                    -Dsonar.sources=. `
-                    -Dsonar.host.url=$SONAR_HOST_URL `
-                    -Dsonar.login=$SONAR_AUTH_TOKEN
-        '''
+                withSonarQubeEnv("${env.SONARQUBE_ENV}") {
+                    powershell """
+                    echo "Ejecutando SonarScanner..."
+                    sonar-scanner
+                """
                 }
             }
         }
 
         stage("Quality Gate") {
             steps {
-                timeout(time: 3, unit: 'MINUTES') {
+                echo "Esperando resultado de SonarQube..."
+                timeout(time: 5, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
                 }
             }
         }
 
-        /* =====================
-           JMETER
-        ====================== */
+        // JMETER
         stage('Prueba de rendimiento con JMeter') {
             steps {
                 powershell """
+                echo "Ejecutando pruebas de rendimiento con JMeter..."
                 docker run --rm `
                     -v "${WORKSPACE}:/jmeter" `
                     justb4/jmeter `
@@ -136,22 +121,20 @@ pipeline {
             }
             post {
                 always {
-                    archiveArtifacts artifacts: 'results.jtl', allowEmptyArchive: true
+                    archiveArtifacts artifacts: 'jmeter/results.jtl', allowEmptyArchive: true
                 }
             }
         }
 
-        /* =====================
-           OWASP ZAP
-        ====================== */
+        // OWASP ZAP
         stage('Escaneo con OWASP ZAP') {
             steps {
                 powershell """
                 docker run --rm `
-                    --network="cael-net" `
+                    --network=${env.PROJECT_NAME}_default `
                     -v "${WORKSPACE}/zap-reports:/zap/reports" `
                     owasp/zap2docker-stable zap-baseline.py `
-                        -t http://cael-test:8000 `
+                        -t http://cael_django:8000 `
                         -r zap_report.htm
                 """
             }
@@ -166,8 +149,8 @@ pipeline {
     post {
         always {
             powershell """
-            docker rm -f ${env.PROJECT_NAME}-test 2>\$null
-            docker-compose -f docker-compose.selenium.yml down 2>\$null
+            echo "Limpiando el entorno Docker..."
+            docker-compose down 2>\$null
             """
         }
     }
