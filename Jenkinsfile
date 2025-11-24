@@ -136,12 +136,13 @@ pipeline {
             steps {
                 powershell """
                 echo "Ejecutando escaneo de seguridad con OWASP ZAP..."
+                New-Item -ItemType Directory -Force -Path "${WORKSPACE}/zap-reports"
                 docker run --rm `
                     --network=${env.PROJECT_NAME}_default `
-                    -v "${WORKSPACE}/zap-reports:/zap/reports" `
+                    -v "${WORKSPACE}/zap-reports:/zap/wrk" `
                     ghcr.io/zaproxy/zaproxy:stable zap-baseline.py `
                         -t http://web:8000 `
-                        -r zap_report.htm
+                        -r /zap/wrk/zap_report.htm
                 """
             }
             post {
