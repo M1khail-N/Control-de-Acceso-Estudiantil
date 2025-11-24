@@ -135,11 +135,12 @@ pipeline {
         stage('Escaneo con OWASP ZAP') {
             steps {
                 powershell """
+                echo "Ejecutando escaneo de seguridad con OWASP ZAP..."
                 docker run --rm `
                     --network=${env.PROJECT_NAME}_default `
                     -v "${WORKSPACE}/zap-reports:/zap/reports" `
                     owasp/zap2docker-stable zap-baseline.py `
-                        -t http://cael_django:8000 `
+                        -t http://web:8000 `
                         -r zap_report.htm
                 """
             }
