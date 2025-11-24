@@ -6,6 +6,7 @@ pipeline {
         DOCKER_IMAGE   = "cael-app"
         SONARQUBE_ENV  = "SonarQubeServer"
         HOST_URL       = "http://host.docker.internal:8000"
+        PROJECT_NETWORK_NAME = 'cael-ci_default'
     }
 
     stages {
@@ -136,9 +137,10 @@ pipeline {
             steps {
                 powershell """
                 echo "Ejecutando escaneo de seguridad con OWASP ZAP..."
+                \$NETWORK_NAME = (docker network ls -f name=cael-ci_default --format "{{.Name}}")
                 New-Item -ItemType Directory -Force -Path "${WORKSPACE}\\zap-reports"
                 docker run --rm `
-                    --network=${env.PROJECT_NAME}_default `
+                    --network=\${NETWORK_NAME} `
                     -v '${WORKSPACE}\\zap-reports:/zap/wrk' `
                     ghcr.io/zaproxy/zaproxy:stable zap-baseline.py `
                         -t http://web:8000 `
