@@ -144,7 +144,8 @@ pipeline {
                     -v '${WORKSPACE}\\zap-reports:/zap/wrk' `
                     ghcr.io/zaproxy/zaproxy:stable zap-baseline.py `
                         -t http://web:8000 `
-                        -r zap_report.htm
+                        -r /zap/wrk/zap_report.htm `
+                        -I
                 """
             }
             post {
