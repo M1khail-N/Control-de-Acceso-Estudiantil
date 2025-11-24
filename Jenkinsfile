@@ -120,7 +120,7 @@ pipeline {
                 docker run --rm `
                     -v "${WORKSPACE}:/jmeter" `
                     justb4/jmeter `
-                    -n -t /jmeter/test-plan.jmx `
+                    -n -t /jmeter/jmeter/test-plan.jmx `
                     -l /jmeter/results.jtl
                 """
             }
