@@ -139,7 +139,7 @@ pipeline {
                 docker run --rm `
                     --network=${env.PROJECT_NAME}_default `
                     -v "${WORKSPACE}/zap-reports:/zap/reports" `
-                    owasp/zap2docker-stable zap-baseline.py `
+                    owasp/zap2docker-weekly zap-baseline.py `
                         -t http://web:8000 `
                         -r zap_report.htm
                 """
