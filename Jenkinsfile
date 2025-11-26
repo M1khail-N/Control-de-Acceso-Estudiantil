@@ -102,7 +102,7 @@ pipeline {
             }
         }
 
-        /*
+        
         stage("Quality Gate") {
             steps {
                 echo "Esperando resultado de SonarQube..."
@@ -111,7 +111,7 @@ pipeline {
                 }
             }
         }
-        */
+        
 
         // JMETER
         stage('Prueba de rendimiento con JMeter') {
